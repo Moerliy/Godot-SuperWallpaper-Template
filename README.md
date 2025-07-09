@@ -7,6 +7,14 @@
 
 ---
 
+## Demo
+
+> **Video Showcase**
+
+https://github.com/IlyaKotomin/Godot-SuperWallpaper-Template/raw/refs/heads/master/assets/preview.mp4
+
+---
+
 ## 📖 Table of Contents
 
 1. [Features](#features)  
@@ -38,13 +46,6 @@
 
 - **Open Source & Extensible**  
   MIT-licensed and ready for community contributions—swap assets, tweak scripts, and extend functionality to your heart’s content.
-
----
-
-## Demo
-
-> **Video Showcase Coming Soon**  
-> Check back later for a walkthrough of the template’s scenes, animations, and configuration options.
 
 ---
 
