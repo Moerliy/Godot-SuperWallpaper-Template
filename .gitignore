@@ -1,0 +1,20 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# — Godot C# (.mono) —
+.mono/              # C# runtime artifacts
+data_*/             # generated data folders
+mono_crash.*.json   # crash dumps
+
+# — C#/Visual Studio / VS Code / Rider —
+bin/
+build/
+obj/
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
