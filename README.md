@@ -1,6 +1,6 @@
 # Godot SuperWallpaper Template
 
-**Godot SuperWallpaper Template** is your starting point for creating immersive, animated desktop and mobile wallpapers with the Godot Engine. Inspired by Xiaomi’s “Super Wallpaper” concept, this template lets you craft 2D/3D scenes that respond to user interaction and system events.
+**Godot SuperWallpaper Template** is your starting point for creating immersive, animated desktop and mobile wallpapers with the Godot Engine. Inspired by Xiaomi's "Super Wallpaper" concept, this template lets you craft 2D/3D scenes that respond to user interaction and system events.
 
 > **Future Cross-Platform Support**  
 > Android, Windows and macOS targets are on the roadmap—stay tuned!
@@ -12,6 +12,19 @@
 > **Video Showcase**
 
 https://github.com/user-attachments/assets/bd9027fb-9012-45a1-9607-4b494ed0d321
+
+---
+
+## 📖 Documentation
+
+📚 **[Visit our Wiki](../../wiki)** for comprehensive guides and documentation:
+
+- **[Using the Template](../../wiki/Using-the-Template)** - Get started quickly with setup and basic customization
+- **[Project Structure](../../wiki/Project-Structure)** - Understand the codebase organization
+- **[Hyprland Configuration](../../wiki/Hyprland-Configuration)** - Configure Hyprland to work with wallpapers
+- **[Setting up Hyprlock](../../wiki/Setting-up-Hyprlock-with-SuperWallpaper)** - Integrate with screen lock events
+- **[Event System Overview](../../wiki/Hyprland-IPC-Event-System-Overview)** - Learn about the reactive event system
+- **[Custom Events and Providers](../../wiki/Custom-Events-and-Providers)** - Extend functionality with your own events
 
 ---
 
@@ -33,19 +46,19 @@ https://github.com/user-attachments/assets/bd9027fb-9012-45a1-9607-4b494ed0d321
 ## Features
 
 - **Godot-Powered**  
-  Leverage Godot 4.x’s 2D and 3D systems, animation tools, and scripting API to build rich, interactive wallpapers.
+  Leverage Godot 4.x's 2D and 3D systems, animation tools, and scripting API to build rich, interactive wallpapers.
 
 - **Hyprland Live Wallpaper**  
   Seamless integration with the Hyprland compositor on Linux via the `hyprwinwrap` plugin—turn your Godot window into a true desktop background.
 
-- **Screen Locker Example**  
-  Includes a ready-to-follow integration guide for **hyprlock** (GPU-accelerated lock screen) in `HYPRLOCK_INTEGRATION.md`.
+- **Event-Driven System**  
+  Built-in event system that responds to workspace changes, window events, and screen lock/unlock states. See **[Event System Overview](../../wiki/Hyprland-IPC-Event-System-Overview)** for details.
 
-- **Performance-First**  
-  Built-in Finite State Machine (FSM) for adaptive FPS: scale back or pause rendering when idle to save CPU/GPU cycles.
+- **Screen Locker Integration**  
+  Ready-to-use integration with **hyprlock** for lock screen animations. Follow our **[Setting up Hyprlock](../../wiki/Setting-up-Hyprlock-with-SuperWallpaper)** guide.
 
 - **Open Source & Extensible**  
-  MIT-licensed and ready for community contributions—swap assets, tweak scripts, and extend functionality to your heart’s content.
+  MIT-licensed and ready for community contributions—swap assets, tweak scripts, and extend functionality. Learn about **[Custom Events and Providers](../../wiki/Custom-Events-and-Providers)**.
 
 ---
 
@@ -57,14 +70,16 @@ https://github.com/user-attachments/assets/bd9027fb-9012-45a1-9607-4b494ed0d321
 git clone https://github.com/IlyaKotomin/Godot-SuperWallpaper-Template.git
 cd Godot-SuperWallpaper-Template
 # Open the project in Godot 4.x
-````
+```
+
+📖 **Detailed Setup**: Follow our **[Using the Template](../../wiki/Using-the-Template)** guide for step-by-step instructions.
 
 ### 2. Hyprland (Linux)
 
 1. **Install Prerequisites**
 
    * Hyprland v0.33.1 or newer
-   * `hyprwinwrap` plugin (e.g., via `pacman -S hyprland-plugin-hyprwinwrap` or your distro’s package manager)
+   * `hyprwinwrap` plugin (e.g., via `pacman -S hyprland-plugin-hyprwinwrap` or your distro's package manager)
 
 2. **Launch the Wallpaper**
 
@@ -93,6 +108,8 @@ cd Godot-SuperWallpaper-Template
 5. **Enjoy!**
    Reload or log in—your wallpaper will run behind all windows.
 
+📖 **Complete Configuration Guide**: See **[Hyprland Configuration](../../wiki/Hyprland-Configuration)** for detailed setup instructions and troubleshooting.
+
 ### 3. Customizing Your Wallpaper
 
 1. **Explore the Scene**
@@ -105,13 +122,15 @@ cd Godot-SuperWallpaper-Template
 
 3. **Extend Logic**
 
-   * Edit or add GDScript files under `res://scripts/`.
-   * Hook into signals (e.g., input events, time of day) for dynamic behavior.
+   * Edit or add C# files under the Scripts directory.
+   * Hook into the event system for dynamic behavior that responds to workspace changes, window events, and more.
 
 4. **Export Targets**
 
    * **Linux (Wayland)**: Ready out of the box.
    * **Android** / **Windows** / **macOS**: Templates and export presets will arrive in upcoming releases.
+
+📖 **Architecture Guide**: Understand the codebase with our **[Project Structure](../../wiki/Project-Structure)** documentation.
 
 ---
 
@@ -122,6 +141,7 @@ cd Godot-SuperWallpaper-Template
 |   ✔️   | Hyprland integration                       |
 |   ✔️   | Hyprlock example                           |
 |   ✔️   | Core wallpaper template                    |
+|   ✔️   | Event-driven architecture                  |
 |    ⏳   | Unit testing                               |
 |    ⏳   | FSM-based dynamic FPS                      |
 |   🔜   | Android live-wallpaper export              |
@@ -141,6 +161,8 @@ We welcome all contributions!
 3. Add tests if applicable.
 4. Submit a pull request and describe your changes.
 
+📖 **Development Guide**: Check our **[Project Structure](../../wiki/Project-Structure)** to understand how to contribute effectively.
+
 ---
 
 ## License
@@ -156,4 +178,3 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 * **Xiaomi Super Wallpapers** – design inspiration
 
 [![Stargazers over time](https://starchart.cc/IlyaKotomin/Godot-SuperWallpaper-Template.svg?variant=adaptive)](https://starchart.cc/IlyaKotomin/Godot-SuperWallpaper-Template)
-
