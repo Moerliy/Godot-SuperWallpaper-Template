@@ -11,7 +11,7 @@
 
 > **Video Showcase**
 
-https://github.com/IlyaKotomin/Godot-SuperWallpaper-Template/raw/refs/heads/master/assets/preview.mp4
+https://github.com/user-attachments/assets/bd9027fb-9012-45a1-9607-4b494ed0d321
 
 ---
 
