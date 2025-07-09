@@ -1,3 +1,3 @@
-namespace hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Interfaces;
+namespace SuperWallpaper.Scripts.Events.Contracts.Interfaces;
 
 public interface ISystemEvent;

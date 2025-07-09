@@ -1,6 +1,6 @@
 using System;
 
-namespace hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Attributes;
+namespace SuperWallpaper.Scripts.Events.Contracts.Attributes;
 
 /// <summary>
 /// This attribute links an event class to the event name in Hyprland IPC.

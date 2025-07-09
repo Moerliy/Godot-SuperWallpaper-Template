@@ -1,9 +1,9 @@
 using System;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Attributes;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Interfaces;
+using SuperWallpaper.Scripts.Events.Contracts;
+using SuperWallpaper.Scripts.Events.Contracts.Attributes;
+using SuperWallpaper.Scripts.Events.Contracts.Interfaces;
 
-namespace hyprlandsuperwallpapertemplate.Scripts.Events.EventTypes;
+namespace SuperWallpaper.Scripts.Events.EventTypes;
 
 [HyprlandEvent("pin")]
 public class PinEvent(string windowAddress, bool pinState) : EventArgs, ISystemEvent

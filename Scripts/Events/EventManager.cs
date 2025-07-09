@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Interfaces;
-using hyprlandsuperwallpapertemplate.Scripts.Events.EventTypes;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Providers;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Providers.ExmapleCustomProviders;
+using SuperWallpaper.Scripts.Events.Contracts;
+using SuperWallpaper.Scripts.Events.EventTypes;
+using SuperWallpaper.Scripts.Events.Contracts.Interfaces;
+using SuperWallpaper.Scripts.Events.Providers;
+using SuperWallpaper.Scripts.Events.Providers.ExampleCustomProviders;
 
-namespace hyprlandsuperwallpapertemplate.Scripts.Events;
+namespace SuperWallpaper.Scripts.Events;
 
 public partial class EventManager : Node
 {
@@ -20,20 +20,29 @@ public partial class EventManager : Node
 
     private EventManager()
     {
-        var hyprlandProvider = new HyprlandEventProvider();
-        var hyprlockProvider = new HyprlockWrapperProvider();
-        
-        RegisterProvider(hyprlandProvider);
-        RegisterProvider(hyprlockProvider);
+        RegisterProviders([
+            new HyprlandEventProvider(),
+
+            // Custom provider for Hyprlock events
+            // See HyprlockWrapperProvider.cs for implementation
+            //
+            // PS: Comment this out if you don't use Hyprlock or don't want to use my wrapper.
+            new HyprlockWrapperProvider()
+        ]);
     }
-    
+
     /// <summary>
     /// Add a provider (call before StartAll)
     /// </summary>
-    private void RegisterProvider(IEventProvider provider)
+    public void RegisterProvider(IEventProvider provider)
     {
         _providers.Add(provider);
         provider.OnEvent += HandleProviderEvent;
+    }
+
+    public void RegisterProviders(IEnumerable<IEventProvider> providers)
+    {
+        foreach (var provider in providers) RegisterProvider(provider);
     }
 
     private void HandleProviderEvent(object sender, ISystemEvent evt) => Dispatch(evt);
@@ -47,8 +56,6 @@ public partial class EventManager : Node
     /// Stop all providers
     /// </summary>
     public void StopAll() => _providers.ForEach(p => p.Stop());
-
-    // --- User subscription to events ---
 
     private readonly Dictionary<Type, List<Delegate>> _handlers = new Dictionary<Type, List<Delegate>>();
 

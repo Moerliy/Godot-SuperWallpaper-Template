@@ -3,10 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Godot;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Interfaces;
-using hyprlandsuperwallpapertemplate.Scripts.Events.EventTypes.ExampleCustomEvents;
+using SuperWallpaper.Scripts.Events.Contracts.Interfaces;
+using SuperWallpaper.Scripts.Events.EventTypes.ExampleCustomEvents;
 
-namespace hyprlandsuperwallpapertemplate.Scripts.Events.Providers.ExmapleCustomProviders;
+namespace SuperWallpaper.Scripts.Events.Providers.ExampleCustomProviders;
 
 public class HyprlockWrapperProvider : IEventProvider
 {
@@ -36,16 +36,15 @@ public class HyprlockWrapperProvider : IEventProvider
         try
         {
             var cacheDir = Path.GetDirectoryName(_stateFilePath);
-            if (!Directory.Exists(cacheDir))
-            {
+
+            if (!Directory.Exists(cacheDir) && cacheDir != null) 
                 Directory.CreateDirectory(cacheDir);
-            }
 
             // Read initial state
             ReadAndDispatchState();
 
             // Set up file watcher
-            _fileWatcher = new FileSystemWatcher(cacheDir, Path.GetFileName(_stateFilePath) ?? string.Empty)
+            _fileWatcher = new FileSystemWatcher(cacheDir!, Path.GetFileName(_stateFilePath) ?? string.Empty)
             {
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.Size,
                 EnableRaisingEvents = true
@@ -148,12 +147,12 @@ public class HyprlockWrapperProvider : IEventProvider
     private void DispatchStateChange(bool isLocked)
     {
         // Only dispatch if state actually changed
-        if (_lastKnownState.HasValue && _lastKnownState.Value == isLocked)
+        if (_lastKnownState == isLocked)
             return;
 
         _lastKnownState = isLocked;
-        var evt = new HyprlockStateEvent(isLocked);
-        OnEvent?.Invoke(this, evt);
+        var stateEvent = new HyprlockStateEvent(isLocked);
+        OnEvent?.Invoke(this, stateEvent);
 
         var stateText = isLocked ? "LOCKED" : "UNLOCKED";
         var color = isLocked ? "red" : "green";

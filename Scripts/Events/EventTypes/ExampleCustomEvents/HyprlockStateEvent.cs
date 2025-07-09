@@ -1,7 +1,7 @@
 using System;
-using hyprlandsuperwallpapertemplate.Scripts.Events.Contracts.Interfaces;
+using SuperWallpaper.Scripts.Events.Contracts.Interfaces;
 
-namespace hyprlandsuperwallpapertemplate.Scripts.Events.EventTypes.ExampleCustomEvents;
+namespace SuperWallpaper.Scripts.Events.EventTypes.ExampleCustomEvents;
 
 public class HyprlockStateEvent(bool locked) : EventArgs, ISystemEvent
 {
