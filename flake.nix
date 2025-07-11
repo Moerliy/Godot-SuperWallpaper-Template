@@ -19,7 +19,7 @@
 
         exportGodot =
           {
-            preset ? "Linux/X11",
+            preset ? "Linux",
             outputName ? "game.x86_64",
             godotPkg ? pkgs.godot_4,
             exportTemplates ? pkgs.godot_4-export-templates,
@@ -31,18 +31,17 @@
 
             nativeBuildInputs = [ godotPkg ];
 
-            GDTEMPLATES = if exportTemplates != null then exportTemplates else "";
-
             buildPhase = ''
               mkdir -p $out/bin
 
-              if [ -n "$GDTEMPLATES" ]; then
-                export HOME=$PWD/home
-                mkdir -p "$HOME/.local/share/godot"
-                ln -s "$GDTEMPLATES" "$HOME/.local/share/godot/templates"
-              fi
+              export HOME=$TMPDIR
+              mkdir -p $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
 
-              ${godotPkg}/bin/godot --headless --export-release "${preset}" $out/bin/${outputName}
+              cp -r ${exportTemplates}/templates/* $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
+              # print
+              ls -a $HOME/.local/share/godot/export_templates/
+
+              ${godotPkg}/bin/godot-mono --headless --export-release "${preset}" $out/bin/${outputName}
               chmod +x $out/bin/${outputName}
             '';
 
