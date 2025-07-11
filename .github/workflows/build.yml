@@ -1,0 +1,50 @@
+name: Build Godot C# Project (.NET)
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: "4.4.1"
+      EXPORT_PRESET: "Linux"
+      GODOT_NET_URL: "https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_mono_linux_x86_64.zip" # .NET version
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Download Godot .NET
+        run: |
+          wget $GODOT_NET_URL -O godot.zip
+          unzip godot.zip -d godot
+          chmod +x godot/Godot_v4.4.1-stable_mono_linux_x86_64/Godot_v4.4.1-stable_mono_linux.x86_64
+
+      - name: Download .NET Export Templates
+        run: |
+          wget https://github.com/godotengine/godot-builds/releases/download/4.4.1-stable/Godot_v4.4.1-stable_mono_export_templates.tpz -O templates.tpz
+          mkdir -p templates
+          unzip -o templates.tpz -d ./
+          # The .NET release template should be templates/templates/linux_release.x86_64
+          # Copy it to ./templates/linux_release.x86_64 if your preset expects that
+          #cp templates/templates/linux_release.x86_64 ./templates/linux_release.x86_64
+
+      - name: Export Linux Executable (.NET)
+        run: |
+          mkdir -p export
+          ls ./templates
+          godot/Godot_v4.4.1-stable_mono_linux_x86_64/Godot_v4.4.1-stable_mono_linux.x86_64 --headless --export-release "$EXPORT_PRESET" export/
+
+      - name: Upload Exported Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: superwallpaper-linux
+          path: export/
