@@ -40,7 +40,6 @@ jobs:
       - name: Export Linux Executable (.NET)
         run: |
           mkdir -p export
-          ls ./templates
           godot/Godot_v4.4.1-stable_mono_linux_x86_64/Godot_v4.4.1-stable_mono_linux.x86_64 --headless --export-release "$EXPORT_PRESET" export/
 
       - name: Upload Exported Build

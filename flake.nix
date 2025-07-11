@@ -43,27 +43,39 @@
 
         game = pkgs.stdenv.mkDerivation {
           pname = "my-godot-game";
-          version = "0.1.3";
+          version = "0.1.4";
 
           src = ./.;
 
-          buildInputs = [ godot ];
+          buildInputs = [
+            godot
+            pkgs.dotnet-sdk_8
+          ];
 
           # Create export templates etc. if needed
           buildPhase = ''
-            #export HOME=$TMPDIR
+            export HOME=$TMPDIR
+
             #mkdir -p $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
 
             #cp -r ${templates}/templates/* $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
+            mkdir -p templates
+            cp -r ${templates}/templates/* templates/
 
             mkdir -p build
-            ${godot}/bin/godot-mono --headless --export-release "Linux" build/my-game.x86_64
+            # Let Godot build the C# code
+            dotnet build -c ExportRelease hyprland-super-wallpaper-template.csproj
+            echo "Building Godot game project..........................."
+            ${godot}/bin/godot-mono --headless --verbose --export-release "Linux" build/my-game.x86_64 || (echo "EXPORT FAILED" && exit 1)
+            echo "Build complete!..........................."
+            ls -
           '';
 
           installPhase = ''
             mkdir -p $out/bin
             # cp build/my-game.pck $out/bin/
-            ln build/my-game.x86_64 $out/bin/my-game
+            cp build/my-game.x86_64 $out/bin/my-game
+            # ln build/my-game.x86_64 $out/bin/my-game
             chmod +x $out/bin/my-game
           '';
         };
