@@ -1,5 +1,5 @@
 {
-  description = "Godot project flake with nix run support";
+  description = "Godot game project flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -11,45 +11,65 @@
       self,
       nixpkgs,
       flake-utils,
+      ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+        };
 
-        exportGodot =
-          {
-            preset ? "Linux",
-            outputName ? "game.x86_64",
-            godotPkg ? pkgs.godot_4,
-            exportTemplates ? pkgs.godot_4-export-templates,
-          }:
-          pkgs.stdenv.mkDerivation {
-            pname = "godot-export";
-            version = "1.0";
-            src = self;
+        godot = pkgs.godot_4-mono; # Override here if needed (see section 3)
 
-            nativeBuildInputs = [ godotPkg ];
+        godotExportTemplates =
+          version: sha256:
+          pkgs.runCommand "godot-templates-${version}"
+            {
+              nativeBuildInputs = [ pkgs.unzip ];
+            }
+            ''
+              mkdir -p $out
+              cp ${
+                pkgs.fetchurl {
+                  url = "https://github.com/godotengine/godot-builds/releases/download/${version}-stable/Godot_v${version}-stable_mono_export_templates.tpz";
+                  sha256 = "${sha256}";
+                }
+              } templates.tpz
 
-            buildPhase = ''
-              mkdir -p $out/bin
-
-              export HOME=$TMPDIR
-              mkdir -p $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
-
-              cp -r ${exportTemplates}/templates/* $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
-              # print
-              ls -a $HOME/.local/share/godot/export_templates/
-
-              ${godotPkg}/bin/godot-mono --headless --export-release "${preset}" $out/bin/${outputName}
-              chmod +x $out/bin/${outputName}
+              unzip templates.tpz -d $out
             '';
+        templates = godotExportTemplates "4.4.1" "sha256-tk0WS5axndcXWhuj86blg+nU3FB7PRMzVj8ka1gRgj4=";
 
-            installPhase = "true";
-          };
+        game = pkgs.stdenv.mkDerivation {
+          pname = "my-godot-game";
+          version = "0.1.3";
+
+          src = ./.;
+
+          buildInputs = [ godot ];
+
+          # Create export templates etc. if needed
+          buildPhase = ''
+            #export HOME=$TMPDIR
+            #mkdir -p $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
+
+            #cp -r ${templates}/templates/* $HOME/.local/share/godot/export_templates/4.4.1.stable.mono/
+
+            mkdir -p build
+            ${godot}/bin/godot-mono --headless --export-release "Linux" build/my-game.x86_64
+          '';
+
+          installPhase = ''
+            mkdir -p $out/bin
+            # cp build/my-game.pck $out/bin/
+            ln build/my-game.x86_64 $out/bin/my-game
+            chmod +x $out/bin/my-game
+          '';
+        };
       in
       {
-        lib.exportGodot = exportGodot;
+        packages.default = game;
       }
     );
 }
