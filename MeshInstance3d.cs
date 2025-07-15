@@ -29,7 +29,7 @@ public partial class MeshInstance3d : Node3D
 		   return;
 
 		_pendingWorkspaceId = newId;
-		_pendingDirection = newId > _prevWorkspaceId ? 1f : -1f;
+		_pendingDirection = newId > _prevWorkspaceId ? -1f : 1f;
 		CallDeferred(nameof(AnimateRotation));
 	}
 
