@@ -1,39 +1,41 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxfxpluu66nfn"]
+[gd_scene load_steps=8 format=3 uid="uid://c8vwwshs1bhn7"]
 
-[ext_resource type="Script" uid="uid://dipwxb5j61gmb" path="res://MeshInstance3d.cs" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://b8rhod2ypq4bl" path="res://Main.cs" id="1_h2yge"]
-[ext_resource type="Script" uid="uid://coph4ory5ftcp" path="res://canvas_layer.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://73yh65s4e4oo" path="res://assets/little-tokyo/little-tokyo.gltf" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://dipwxb5j61gmb" path="res://MeshInstance3d.cs" id="3_1bvp3"]
 
-[sub_resource type="Environment" id="Environment_7dm0k"]
-background_mode = 1
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
+sky_top_color = Color(0.231115, 0.470175, 0.656184, 1)
+sky_horizon_color = Color(0.670478, 0.619416, 0.821243, 1)
+sky_curve = 0.14489
+ground_bottom_color = Color(0.593084, 0.388198, 0.34656, 1)
+ground_horizon_color = Color(0.670478, 0.619416, 0.821243, 1)
+ground_curve = 0.134543
+sun_angle_max = 34.44
 
-[sub_resource type="TorusMesh" id="TorusMesh_7dm0k"]
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("ProceduralSkyMaterial_h2yge")
 
-[sub_resource type="LabelSettings" id="LabelSettings_0xm2m"]
-font_size = 45
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+
+[sub_resource type="Environment" id="Environment_rdm1p"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_h2yge")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.289)
-environment = SubResource("Environment_7dm0k")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_lquwl")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 1)
-mesh = SubResource("TorusMesh_7dm0k")
-script = ExtResource("1_0xm2m")
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("1_ig7tw")]
+script = ExtResource("3_1bvp3")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.71325, 0.163624, -0.681543, 0, 0.97237, 0.233445, 0.700909, 0.166505, -0.693543, -7.33331, 1.78095, -6.6469)
+environment = SubResource("Environment_rdm1p")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.903395, 0.139882, -0.405351, 0.0445473, 0.909567, 0.413163, 0.426489, -0.391307, 0.815467, -2.03442, 1.42244, 2.44918)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-script = ExtResource("1_ig7tw")
-
-[node name="FPSLabel" type="Label" parent="CanvasLayer"]
-offset_left = 22.0
-offset_top = 22.0
-offset_right = 148.0
-offset_bottom = 85.0
-text = "FPS: 0"
-label_settings = SubResource("LabelSettings_0xm2m")
+transform = Transform3D(0.505042, -0.831538, 0.231253, 0.746829, 0.555338, 0.365851, -0.432643, -0.0120636, 0.901485, -5.24001, -0.0559819, 7.08584)
