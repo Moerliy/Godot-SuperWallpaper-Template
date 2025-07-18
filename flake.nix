@@ -4,6 +4,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+
+    # Hyprlock
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -19,6 +25,42 @@
         pkgs = import nixpkgs {
           inherit system;
         };
+        hyprlock = import hyprlock {
+          inherit pkgs;
+        };
+
+        # static wrapper script for hyprlock
+        hyprlockWrapper = pkgs.writeShellScriptBin "hyprlockWrapper" ''
+          #!/usr/bin/env bash
+          echo "[hyprlock-wrapper] Script started" >&2
+
+          # Where to write the lock state
+          STATE_FILE="$HOME/.cache/hyprlock_state"
+
+          # Ensure the state file exists
+          mkdir -p "$(dirname "$STATE_FILE")"
+          : > "$STATE_FILE"
+
+          # Initialize with locked state since Hyprlock starts locked
+          printf 'locked' > "$STATE_FILE"
+          echo "[hyprlock-wrapper] Initial state set to 'locked'" >&2
+
+          # Use stdbuf to disable buffering and process substitution for real-time processing
+          ${pkgs.coreutils}/bin/stdbuf -oL -eL ${
+            hyprlock.packages.${pkgs.system}.hyprlock
+          }/bin/hyprlock 2>&1 | while IFS= read -r line; do
+            case "$line" in
+              # This line indicates that user has logged in successfully 
+              # and Hyprlock is now playing login animation
+              *"[LOG] auth: authenticated for hyprlock"*)
+                printf 'unlocked' > "$STATE_FILE"
+                echo "[hyprlock-wrapper] Unlock event detected, wrote 'unlocked' to $STATE_FILE" >&2
+                ;;
+            esac
+          done
+
+          echo "[hyprlock-wrapper] hyprlock exited" >&2
+        '';
 
         # default values
         defaultGodot = pkgs.godot_4-mono;
@@ -74,6 +116,7 @@
       {
         packages.default = mkPackage { };
         packages.withConfig = mkPackage;
+        packages.hyprlockWrapper = hyprlockWrapper;
       }
     );
 }
