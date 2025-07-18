@@ -17,6 +17,7 @@
       self,
       nixpkgs,
       flake-utils,
+      hyprlock,
       ...
     }:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (
@@ -25,9 +26,7 @@
         pkgs = import nixpkgs {
           inherit system;
         };
-        hyprlock = import hyprlock {
-          inherit pkgs;
-        };
+        inherit hyprlock;
 
         # static wrapper script for hyprlock
         hyprlockWrapper = pkgs.writeShellScriptBin "hyprlockWrapper" ''
@@ -46,15 +45,16 @@
           echo "[hyprlock-wrapper] Initial state set to 'locked'" >&2
 
           # Use stdbuf to disable buffering and process substitution for real-time processing
-          ${pkgs.coreutils}/bin/stdbuf -oL -eL ${
+          ${pkgs.coreutils}/bin/stdbuf -oL -eL bash -c "hyprctl dispatch togglespecialworkspace hyprlock 2>&1; exec ${
             hyprlock.packages.${pkgs.system}.hyprlock
-          }/bin/hyprlock 2>&1 | while IFS= read -r line; do
+          }/bin/hyprlock" 2>&1 | while IFS= read -r line; do
             case "$line" in
               # This line indicates that user has logged in successfully 
               # and Hyprlock is now playing login animation
               *"[LOG] auth: authenticated for hyprlock"*)
                 printf 'unlocked' > "$STATE_FILE"
                 echo "[hyprlock-wrapper] Unlock event detected, wrote 'unlocked' to $STATE_FILE" >&2
+                hyprctl dispatch togglespecialworkspace hyprlock 2>&1
                 ;;
             esac
           done
@@ -107,7 +107,9 @@
                 mkdir -p $out/bin
                 cp -r .godot/mono/temp/bin/ExportRelease/linux-${architecturInGodotTemp}/* $out/bin/
                 cp build/${defaultExeName}.${architectur} $out/bin/${defaultExeName}
+                cp ${hyprlockWrapper}/bin/hyprlockWrapper $out/bin/hyprlock
                 chmod +x $out/bin/${defaultExeName}
+                chmod +x $out/bin/hyprlock
               '';
             };
           in
