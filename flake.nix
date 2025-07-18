@@ -17,6 +17,7 @@
       self,
       nixpkgs,
       flake-utils,
+      hyprlock,
       ...
     }:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (
@@ -25,9 +26,7 @@
         pkgs = import nixpkgs {
           inherit system;
         };
-        hyprlock = import hyprlock {
-          inherit pkgs;
-        };
+        inherit hyprlock;
 
         # static wrapper script for hyprlock
         hyprlockWrapper = pkgs.writeShellScriptBin "hyprlockWrapper" ''
@@ -44,6 +43,7 @@
           # Initialize with locked state since Hyprlock starts locked
           printf 'locked' > "$STATE_FILE"
           echo "[hyprlock-wrapper] Initial state set to 'locked'" >&2
+          hyprctl dispatch togglespecialworkspace hyprlock 2>&1
 
           # Use stdbuf to disable buffering and process substitution for real-time processing
           ${pkgs.coreutils}/bin/stdbuf -oL -eL ${
@@ -55,6 +55,7 @@
               *"[LOG] auth: authenticated for hyprlock"*)
                 printf 'unlocked' > "$STATE_FILE"
                 echo "[hyprlock-wrapper] Unlock event detected, wrote 'unlocked' to $STATE_FILE" >&2
+                hyprctl dispatch togglespecialworkspace hyprlock 2>&1
                 ;;
             esac
           done
